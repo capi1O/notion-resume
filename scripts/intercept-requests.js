@@ -15,10 +15,10 @@ const setupRequestInterception = async (page, assetsInventory) => {
 	
 				try {
 					await download(url, path.dirname(localFilePath));
-					logGreen(`x downloaded ${url} to ${localFilePath}`);
+					logGreen(`downloaded ${url} to ${localFilePath}`);
 					assetsInventory.push({ basename, url, localPath: localFilePath });
 				} catch (error) {
-					logRed(`o failed to download ${url}`, error.message);
+					logRed(`failed to download ${url}`, error.message);
 					// console.error(error);
 				}
 			}

@@ -1,7 +1,8 @@
 const cheerio = require('cheerio');
 const path = require('path');
+const { logGreen, logRed } = require('./logging.js');
 
-const replaceAssets = (html, assetsInventory, htmlAssetsInventory) => {
+const replaceAssets = (html, downloadedAssetsInventory, htmlAssetsInventory) => {
 
 	let $ = cheerio.load(html);
 
@@ -16,10 +17,12 @@ const replaceAssets = (html, assetsInventory, htmlAssetsInventory) => {
 		htmlAssetsInventory.push({ basename, url: originalUrl });
 
 		// Find if this asset was downloaded
-		const foundAsset = assetsInventory.find(asset => asset.url === originalUrl);
+		const foundAsset = downloadedAssetsInventory.find(asset => asset.url === originalUrl);
 		if (foundAsset) {
 			$(this).attr(attribute, `./assets/${basename}`); // Adjust path as needed
+			logGreen(`replaced asset ${originalUrl}`);
 		}
+		else logRed(`failed to replace asset ${originalUrl}, no match found`);
 	});
 	// Save the modified HTML
 	const modifiedHtml = $.html();
