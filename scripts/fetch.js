@@ -33,8 +33,10 @@ let htmlAssetsInventory = []; // To keep track of assets used in HTML
 	const downloadedButNotUsed = assetsInventory.filter(asset => !htmlAssetsInventory.some(htmlAsset => htmlAsset.basename === asset.basename));
 	const usedButNotDownloaded = htmlAssetsInventory.filter(htmlAsset => !assetsInventory.some(asset => asset.basename === htmlAsset.basename));
 
-	console.log("Downloaded but not used in HTML:", downloadedButNotUsed);
-	console.log("Used in HTML but not downloaded:", usedButNotDownloaded);
+	console.log('\n\n\n============');
+	console.log('Downloaded but not used in HTML:', downloadedButNotUsed.map(({ url }) => url));
+	console.log('\n\n\n============');
+	console.log("Used in HTML but not downloaded:", usedButNotDownloaded.map(({ url }) => url));
 
 
 	// Save the content to an HTML file.

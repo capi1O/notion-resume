@@ -1,5 +1,6 @@
 const download = require('download');
 const path = require('path');
+const { logGreen, logRed } = require('./logging.js');
 
 
 const setupRequestInterception = async (page, assetsInventory) => {
@@ -13,10 +14,11 @@ const setupRequestInterception = async (page, assetsInventory) => {
 
 			try {
 				await download(url, path.dirname(localFilePath));
-				console.log(`x downloaded ${url} to ${localFilePath}`);
+				logGreen(`x downloaded ${url} to ${localFilePath}`);
 				assetsInventory.push({ basename, url, localPath: localFilePath });
-			} catch (e) {
-				console.error(`o failed to download ${url}`, e);
+			} catch (error) {
+				logRed(`o failed to download ${url}`, error.message);
+				// console.error(error);
 			}
 		}
 		req.continue();
