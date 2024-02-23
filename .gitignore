@@ -1,0 +1,8 @@
+# libs
+node_modules
+# notion page
+fetched-page
+# cover image, logos, profile pic...
+assets
+# env var
+.env
