@@ -17,7 +17,7 @@ const replaceAssets = (html, assetsInventory, htmlAssetsInventory) => {
 		// Find if this asset was downloaded
 		const foundAsset = assetsInventory.find(asset => asset.url === originalUrl);
 		if (foundAsset) {
-			$(this).attr(attribute, `/assets/${basename}`); // Adjust path as needed
+			$(this).attr(attribute, `./assets/${basename}`); // Adjust path as needed
 		}
 	});
 	// Save the modified HTML

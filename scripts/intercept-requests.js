@@ -9,7 +9,7 @@ const setupRequestInterception = async (page, assetsInventory) => {
 		if (['image', 'stylesheet', 'script', 'font'].includes(req.resourceType())) {
 			const url = req.url();
 			const basename = path.basename(url);
-			const localFilePath = `/assets/${basename}`;
+			const localFilePath = `./notion-page/assets/${basename}`;
 
 			try {
 				await download(url, path.dirname(localFilePath));
