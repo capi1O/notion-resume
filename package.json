@@ -1,0 +1,14 @@
+{
+  "name": "notion-resume",
+  "version": "1.0.0",
+  "description": "capi1O",
+  "main": "index.js",
+  "scripts": {
+    "fetch": "dotenv -- curl $NOTION_URL"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv-cli": "^7.3.0"
+  }
+}
