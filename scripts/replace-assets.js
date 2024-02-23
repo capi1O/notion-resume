@@ -10,6 +10,7 @@ const replaceAssets = (html, assetsInventory, htmlAssetsInventory) => {
 		let attribute = tagName === 'link' ? 'href' : 'src';
 		let originalUrl = $(this).attr(attribute);
 		if (!originalUrl) return; // Skip if no URL
+		if (originalUrl.startsWith('data:')) return; // Skip if data URL
 
 		const basename = path.basename(originalUrl);
 		htmlAssetsInventory.push({ basename, url: originalUrl });
