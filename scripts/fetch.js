@@ -5,7 +5,7 @@ const setupRequestInterception = require('./intercept-requests.js');
 const replaceAssets = require('./replace-assets.js');
 const notionUrl = process.env.NOTION_URL;
 
-let downloadedAssetsInventory = []; // To keep track of downloaded assets
+const downloadedAssetsInventory = {}; // To keep track of downloaded assets
 let htmlAssetsInventory = []; // To keep track of assets used in HTML
 
 (async () => {
@@ -27,15 +27,14 @@ let htmlAssetsInventory = []; // To keep track of assets used in HTML
 	// replace assets URLs by local paths
 	console.log('\n\n\n============');
 	console.log('Step 2: Replace assets in HTML');
-	const modifiedHtml = replaceAssets(html, downloadedAssetsInventory, htmlAssetsInventory);
+	const notionSiteHostname = new URL(notionUrl).hostname;
+	const modifiedHtml = replaceAssets(html, downloadedAssetsInventory, htmlAssetsInventory, notionSiteHostname);
 
 	// Optionally, compare inventories for unmatched assets
-	const downloadedButNotUsed = downloadedAssetsInventory.filter(asset => !htmlAssetsInventory.some(htmlAsset => htmlAsset.url === asset.basename));
-	const usedButNotDownloaded = htmlAssetsInventory.filter(htmlAsset => !downloadedAssetsInventory.some(asset => asset.basename === htmlAsset.basename));
 	console.log('\n\n\n============');
-	console.log('Downloaded but not used in HTML:', downloadedButNotUsed);
+	console.log('Downloaded but not used in HTML:', Object.values(downloadedAssetsInventory).map(({ url}) => url));
 	console.log('\n\n\n============');
-	console.log("Used in HTML but not downloaded:", usedButNotDownloaded);
+	console.log("Used in HTML but not downloaded:", htmlAssetsInventory);
 
 
 	// Save the content to an HTML file.
