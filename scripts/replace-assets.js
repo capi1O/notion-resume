@@ -2,9 +2,11 @@ const cheerio = require('cheerio');
 const path = require('path');
 const { logGreen, logRed } = require('./logging.js');
 
-const replaceAssets = (html, downloadedAssetsInventory, htmlAssetsInventory, siteHostname) => {
+const replaceAssets = (html, downloadedAssetsInventory, siteHostname) => {
 
 	let $ = cheerio.load(html);
+
+	const htmlAssetsUrls = []; // To keep track of assets used in HTML
 
 	$('img, script, link').each(function() {
 		const tagName = this.tagName.toLowerCase();
@@ -28,13 +30,13 @@ const replaceAssets = (html, downloadedAssetsInventory, htmlAssetsInventory, sit
 		else {
 			logRed(`failed to replace asset ${originalUrl}, no match found`);
 			// const basename = path.basename(originalUrl);
-			htmlAssetsInventory.push(originalUrl);
+			htmlAssetsUrls.push(originalUrl);
 		}
 	});
 	// Save the modified HTML
 	const modifiedHtml = $.html();
 
-	return modifiedHtml;
+	return { htmlAssetsInventory: htmlAssetsUrls, modifiedHtml };
 }
 
 module.exports = replaceAssets;

@@ -4,8 +4,9 @@ const { v4: uuidv4 } = require('uuid');
 const { logGreen, logRed } = require('./logging.js');
 
 
-const setupRequestInterception = async (page, assetsInventory) => {
+const setupRequestInterception = async (page) => {
 
+	const downloadedAssetsInventory = {}; // keep track of downloaded assets
 	const downloadPromisesGenerators = [];
 	let assetNumber = 0;
 
@@ -26,7 +27,7 @@ const setupRequestInterception = async (page, assetsInventory) => {
 					download(url, path.dirname(localFilePath))
 					.then((result) => {
 						logGreen(`asset #${_assetNumber} downloaded`);
-						assetsInventory[uid] = { url, uid, extension };
+						downloadedAssetsInventory[uid] = { url, uid, extension };
 						// pendingDownloads--;
 					})
 					.catch((error) => {
@@ -40,7 +41,7 @@ const setupRequestInterception = async (page, assetsInventory) => {
 		req.continue();
 	});
 
-	return downloadPromisesGenerators;
+	return { downloadedAssetsInventory, downloadPromisesGenerators };
 };
 
 module.exports = setupRequestInterception;

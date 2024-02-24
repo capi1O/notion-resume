@@ -5,17 +5,13 @@ const setupRequestInterception = require('./intercept-requests.js');
 const replaceAssets = require('./replace-assets.js');
 const notionUrl = process.env.NOTION_URL;
 
-const downloadedAssetsInventory = {}; // To keep track of downloaded assets
-let htmlAssetsInventory = []; // To keep track of assets used in HTML
-
 (async () => {
 	// Launch a new browser session.
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 	
-	// prepare to listen for requests
-	const downloadPromisesGenerators = await setupRequestInterception(page, downloadedAssetsInventory);
-	// downloadCompletePromises is populated as the requests are received
+	// prepare to listen for requests. returned vars are populated as the requests are received
+	const { downloadedAssetsInventory, downloadPromisesGenerators } = await setupRequestInterception(page);
 
 	console.log('\n\n\n============');
 	console.log('Step 1: Load page');
@@ -32,13 +28,13 @@ let htmlAssetsInventory = []; // To keep track of assets used in HTML
 	console.log('Step 3: Replace assets in HTML');
 	const html = await page.content(); // Get the page content (fetch the page HTML)
 	const notionSiteHostname = new URL(notionUrl).hostname;
-	const modifiedHtml = replaceAssets(html, downloadedAssetsInventory, htmlAssetsInventory, notionSiteHostname);
+	const { htmlAssetsUrls, modifiedHtml } = replaceAssets(html, downloadedAssetsInventory, notionSiteHostname);
 
 	// Optionally, compare inventories for unmatched assets
 	console.log('\n\n\n============');
-	console.log('Downloaded but not used in HTML:', Object.values(downloadedAssetsInventory).map(({ url}) => url));
+	console.log('Downloaded but not used in HTML:', Object.values(downloadedAssetsInventory).map(({ url }) => url));
 	console.log('\n\n\n============');
-	console.log("Used in HTML but not downloaded:", htmlAssetsInventory);
+	console.log("Used in HTML but not downloaded:", htmlAssetsUrls);
 
 
 	// Save the content to an HTML file.
