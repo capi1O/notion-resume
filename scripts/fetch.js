@@ -13,20 +13,24 @@ let htmlAssetsInventory = []; // To keep track of assets used in HTML
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 	
+	// prepare to listen for requests
+	const downloadCompletePromises = setupRequestInterception(page, downloadedAssetsInventory);
+	// downloadCompletePromises is populated as the requests are received
+
 	console.log('\n\n\n============');
-	console.log('Step 1: Load page and download assets');
-	setupRequestInterception(page, downloadedAssetsInventory);
+	console.log('Step 1: Load page');
 	// Waits for the network to be idle (no more than 2 connections for at least 500 ms).
 	await page.goto(notionUrl, { waitUntil: 'networkidle2' });
 	// Wait for a specific element that indicates the page has loaded. Adjust the selector as needed.
 	await page.waitForSelector('.notion-collection_view-block .notion-page-block.notion-collection-item[data-block-id="e1fa88c0-63dd-4512-a374-07331667fa0b"]');
 
-	// Get the page content (fetch the page HTML)
-	const html = await page.content();
+	console.log('Step 2: Download the assets');
+	await Promise.all(downloadCompletePromises); // execute the promises
 
 	// replace assets URLs by local paths
 	console.log('\n\n\n============');
-	console.log('Step 2: Replace assets in HTML');
+	console.log('Step 3: Replace assets in HTML');
+	const html = await page.content(); // Get the page content (fetch the page HTML)
 	const notionSiteHostname = new URL(notionUrl).hostname;
 	const modifiedHtml = replaceAssets(html, downloadedAssetsInventory, htmlAssetsInventory, notionSiteHostname);
 
