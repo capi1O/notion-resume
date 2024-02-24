@@ -36,7 +36,7 @@ const replaceAssets = (html, downloadedAssetsInventory, siteOrigin) => {
 	// Save the modified HTML
 	const modifiedHtml = $.html();
 
-	return { htmlAssetsInventory: htmlAssetsUrls, modifiedHtml };
+	return { htmlAssetsUrls, modifiedHtml };
 }
 
 module.exports = replaceAssets;
