@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const path = require('path');
 const { logGreen, logRed } = require('./logging.js');
 
-const replaceAssets = (html, downloadedAssetsInventory, siteHostname) => {
+const replaceAssets = (html, downloadedAssetsInventory, siteOrigin) => {
 
 	let $ = cheerio.load(html);
 
@@ -17,7 +17,7 @@ const replaceAssets = (html, downloadedAssetsInventory, siteHostname) => {
 		if (originalUrl.startsWith('data:')) return; // Skip if data URL
 
 		// prepend original URL with hostname if needed
-		if (originalUrl.startsWith('/')) originalUrl = new URL(originalUrl, siteHostname).href;
+		if (originalUrl.startsWith('/')) originalUrl = new URL(originalUrl, siteOrigin).href;
 
 		// Find if this asset was downloaded
 		const downloadedAsset = Object.values(downloadedAssetsInventory).find(({ url }) => url === originalUrl);

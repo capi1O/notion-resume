@@ -27,8 +27,8 @@ const notionUrl = process.env.NOTION_URL;
 	console.log('\n\n\n============');
 	console.log('Step 3: Replace assets in HTML');
 	const html = await page.content(); // Get the page content (fetch the page HTML)
-	const notionSiteHostname = new URL(notionUrl).hostname;
-	const { htmlAssetsUrls, modifiedHtml } = replaceAssets(html, downloadedAssetsInventory, notionSiteHostname);
+	const notionSiteOrigin = new URL(notionUrl).origin;
+	const { htmlAssetsUrls, modifiedHtml } = replaceAssets(html, downloadedAssetsInventory, notionSiteOrigin);
 
 	// Optionally, compare inventories for unmatched assets
 	console.log('\n\n\n============');
