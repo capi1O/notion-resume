@@ -14,7 +14,7 @@ let htmlAssetsInventory = []; // To keep track of assets used in HTML
 	const page = await browser.newPage();
 	
 	// prepare to listen for requests
-	const downloadCompletePromises = setupRequestInterception(page, downloadedAssetsInventory);
+	const downloadPromisesGenerators = await setupRequestInterception(page, downloadedAssetsInventory);
 	// downloadCompletePromises is populated as the requests are received
 
 	console.log('\n\n\n============');
@@ -25,7 +25,7 @@ let htmlAssetsInventory = []; // To keep track of assets used in HTML
 	await page.waitForSelector('.notion-collection_view-block .notion-page-block.notion-collection-item[data-block-id="e1fa88c0-63dd-4512-a374-07331667fa0b"]');
 
 	console.log('Step 2: Download the assets');
-	await Promise.all(downloadCompletePromises); // execute the promises
+	await Promise.all(downloadPromisesGenerators.map(downloadPromise => downloadPromise())); // execute the promises
 
 	// replace assets URLs by local paths
 	console.log('\n\n\n============');
