@@ -23,12 +23,13 @@ const replaceAssets = (html, downloadedAssetsInventory, siteOrigin) => {
 		const downloadedAsset = Object.values(downloadedAssetsInventory).find(({ url }) => url === originalUrl);
 		if (downloadedAsset) {
 			const { uid, extension } = downloadedAsset;
-			$(this).attr(attribute, `./assets/${uid}${extension}`); // Adjust path as needed
-			logGreen(`replaced asset ${originalUrl}`);
+			const localFileURL = `./assets/${uid}${extension}`;
+			$(this).attr(attribute, localFileURL); // Adjust path as needed
+			console.log(`\x1b[32mreplaced asset \x1b[4m${originalUrl}\x1b[0m\x1b[32m by \x1b[33m${localFileURL}\x1b[0m`);
 			delete downloadedAssetsInventory[uid];
 		}
 		else {
-			logRed(`failed to replace asset ${originalUrl}, no match found`);
+			console.log(`\x1b[31mfailed to replace asset \x1b[4m${originalUrl}\x1b[0m\x1b[31m, no match found\x1b[0m`);
 			// const basename = path.basename(originalUrl);
 			htmlAssetsUrls.push(originalUrl);
 		}

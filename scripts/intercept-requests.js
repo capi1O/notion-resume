@@ -1,7 +1,6 @@
 const download = require('download');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { logGreen, logRed } = require('./logging.js');
 
 
 const setupRequestInterception = async (page) => {
@@ -20,18 +19,18 @@ const setupRequestInterception = async (page) => {
 				const localFilePath = `./notion-page/assets/${uid}${extension}`;
 	
 				assetNumber++;
-				console.log(`asset #${assetNumber} requested, will download "${url}" to "${localFilePath}"`);
+				console.log(`asset \x1b[34m${assetNumber}\x1b[0m requested, will download \x1b[4m${url}\x1b[0m to \x1b[33m${localFilePath}\x1b[0m`);
 				const _assetNumber = assetNumber; 
 				// prepare the promise but do not execute it
 				const downloadPromiseGenerator = () =>
 					download(url, path.dirname(localFilePath))
 					.then((result) => {
-						logGreen(`asset #${_assetNumber} downloaded`);
+						console.log(`\x1b[32masset \x1b[34m#${_assetNumber}\x1b[32m downloaded\x1b[0m`);
 						downloadedAssetsInventory[uid] = { url, uid, extension };
 						// pendingDownloads--;
 					})
 					.catch((error) => {
-						logRed(`asset #${_assetNumber} download failed`, error.message);
+						console.log(`\x1b[31masset \x1b[34m#${_assetNumber}\x1b[31m download failed\x1b[0m`, error.message);
 						// console.error(error);
 					});
 					
