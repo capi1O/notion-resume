@@ -11,7 +11,7 @@ const notionUrl = process.env.NOTION_URL;
 	const page = await browser.newPage();
 	
 	// prepare to listen for requests. returned vars are populated as the requests are received
-	const { downloadedAssetsInventory, downloadPromisesGenerators } = await setupRequestInterception(page);
+	const { downloadedAssetsObjects, downloadPromisesGenerators } = await setupRequestInterception(page);
 
 	console.log('\n\n\n============');
 	console.log('Step 1: Load page');
@@ -28,11 +28,11 @@ const notionUrl = process.env.NOTION_URL;
 	console.log('Step 3: Replace assets in HTML');
 	const html = await page.content(); // Get the page content (fetch the page HTML)
 	const notionSiteOrigin = new URL(notionUrl).origin;
-	const { htmlAssetsUrls, modifiedHtml } = replaceAssets(html, downloadedAssetsInventory, notionSiteOrigin);
+	const { htmlAssetsUrls, modifiedHtml } = replaceAssets(html, downloadedAssetsObjects, notionSiteOrigin);
 
 	// Optionally, compare inventories for unmatched assets
 	console.log('\n\n\n============');
-	console.log('Downloaded but not used in HTML:', Object.values(downloadedAssetsInventory).map(({ url }) => url));
+	console.log('Downloaded but not used in HTML:', downloadedAssetsObjects.map(({ url }) => url));
 	console.log('\n\n\n============');
 	console.log("Used in HTML but not downloaded:", htmlAssetsUrls);
 
