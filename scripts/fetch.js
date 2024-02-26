@@ -1,9 +1,13 @@
 require('dotenv').config();
 const fs = require('fs');
+const fsExtra = require('fs-extra');
 const puppeteer = require('puppeteer');
+
 const setupRequestInterception = require('./intercept-requests.js');
 const replaceAssets = require('./replace-assets.js');
+
 const notionUrl = process.env.NOTION_URL;
+const assetsDirectory = './notion-page/assets/';
 
 (async () => {
 	// Launch a new browser session.
@@ -12,6 +16,12 @@ const notionUrl = process.env.NOTION_URL;
 	
 	// prepare to listen for requests. returned vars are populated as the requests are received
 	const { downloadedAssetsObjects, downloadPromisesGenerators } = await setupRequestInterception(page);
+
+	// remove assets from previous run
+	console.log('\n\n\n============');
+	fsExtra.emptyDir(assetsDirectory)
+		.then(() => { console.log('Step 0: Assets directory cleared'); })
+		.catch(err => { console.error(err); });
 
 	console.log('\n\n\n============');
 	console.log('Step 1: Load page');
