@@ -6,7 +6,7 @@ const replaceAssets = (html, downloadedAssetsObjects, siteOrigin) => {
 
 	let $ = cheerio.load(html);
 
-	const htmlAssetsUrls = []; // To keep track of assets used in HTML
+	const htmlAssetsObjects = []; // keep track of assets used in HTML
 
 	$('img, script, link').each(function() {
 		const tagName = this.tagName.toLowerCase();
@@ -27,20 +27,20 @@ const replaceAssets = (html, downloadedAssetsObjects, siteOrigin) => {
 			// repplace URL in HTML
 			$(this).attr(attribute, localFileURL); // Adjust path as needed
 			console.log(`\x1b[32mreplaced asset \x1b[4m${originalUrl}\x1b[0m\x1b[32m by \x1b[33m${localFileURL}\x1b[0m`);
-			// remove the item from downloadedAssetsObjects
-			// delete downloadedAssetsObjects[uid];
-			downloadedAssetsObjects = [...downloadedAssetsObjects.filter((downloadedAssetObject) => downloadedAssetObject.assetNumber !== assetNumber )];
+			// mark the item as replaced
+			htmlAssetsObjects.push({ url: originalUrl, replaced: true });
+
 		}
 		else {
 			console.log(`\x1b[31mfailed to replace asset \x1b[4m${originalUrl}\x1b[0m\x1b[31m, no match found\x1b[0m`);
-			// const basename = path.basename(originalUrl);
-			htmlAssetsUrls.push(originalUrl);
+			// mark the item as not replaced
+			htmlAssetsObjects.push({ url: originalUrl, replaced: false });
 		}
 	});
 	// Save the modified HTML
 	const modifiedHtml = $.html();
 
-	return { htmlAssetsUrls, modifiedHtml };
+	return { htmlAssetsObjects, modifiedHtml };
 }
 
 module.exports = replaceAssets;

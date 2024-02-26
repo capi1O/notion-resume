@@ -38,13 +38,17 @@ const assetsDirectory = './notion-page/assets/';
 	console.log('Step 3: Replace assets in HTML');
 	const html = await page.content(); // Get the page content (fetch the page HTML)
 	const notionSiteOrigin = new URL(notionUrl).origin;
-	const { htmlAssetsUrls, modifiedHtml } = replaceAssets(html, downloadedAssetsObjects, notionSiteOrigin);
+	const { htmlAssetsObjects, modifiedHtml } = replaceAssets(html, downloadedAssetsObjects, notionSiteOrigin);
 
 	// Optionally, compare inventories for unmatched assets
 	console.log('\n\n\n============');
-	console.log('Downloaded but not used in HTML:', downloadedAssetsObjects.map(({ url }) => url));
+	const unusedDownloadedAssets = downloadedAssetsObjects.filter(({ url }) =>
+		!htmlAssetsObjects.map((htmlAssetObject) => htmlAssetObject.url).includes(url)
+	);
+	// not in htmlAssetsObjects.filter
+	console.log('Downloaded but not used in HTML:', unusedDownloadedAssets.map(({ url }) => url));
 	console.log('\n\n\n============');
-	console.log("Used in HTML but not downloaded:", htmlAssetsUrls);
+	console.log("Used in HTML but not downloaded:", htmlAssetsObjects.filter(({ replaced }) => replaced === false).map(({ url }) => url));
 
 
 	// Save the content to an HTML file.
